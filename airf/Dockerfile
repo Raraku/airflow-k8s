@@ -1383,6 +1383,18 @@ RUN sed --in-place=.bak "s/secure_path=\"/secure_path=\"\/.venv\/bin:/" /etc/sud
 
 ARG AIRFLOW_VERSION
 
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+         openjdk-11-jre-headless \
+  && apt-get autoremove -yqq --purge \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
+# Installing spark here to ensure jdk data is set
+RUN pip install --no-cache-dir "apache-airflow==${AIRFLOW_VERSION}" apache-airflow-providers-apache-spark==2.1.3
+
 # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
 # to learn more about the way how signals are handled by the image
 # Also set airflow as nice PROMPT message.
