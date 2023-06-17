@@ -1276,6 +1276,8 @@ RUN if [[ ${INSTALL_PACKAGES_FROM_CONTEXT} == "true" ]]; then \
 RUN if [[ -f /docker-context-files/requirements.txt ]]; then \
         pip install --no-cache-dir --user -r /docker-context-files/requirements.txt; \
     fi
+COPY requirements.txt /
+RUN pip install --no-cache-dir "apache-airflow==${AIRFLOW_VERSION}" -r /requirements.txt
 
 ##############################################################################################
 # This is the actual Airflow image - much smaller than the build one. We copy
