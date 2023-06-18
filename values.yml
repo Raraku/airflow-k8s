@@ -1469,7 +1469,7 @@ flower:
 
 # StatsD settings
 statsd:
-  enabled: true
+  enabled: false
   # Max number of old replicasets to retain
   revisionHistoryLimit: ~
 
