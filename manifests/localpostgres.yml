@@ -1,0 +1,31 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: postgres-db-svc
+  namespace: default
+spec:
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: postgres-db-svc-endpoint # by convention, use the name of the Service
+                     # as a prefix for the name of the EndpointSlice
+  labels:
+    # You should set the "kubernetes.io/service-name" label.
+    # Set its value to match the name of the Service
+    kubernetes.io/service-name: postgres-db-svc
+addressType: IPv4
+ports:
+  - name: '' # empty because port 9376 is not assigned as a well-known
+             # port (by IANA)
+    appProtocol: http
+    protocol: TCP
+    port: 5432
+endpoints:
+  - addresses:
+      - "192.168.65.4" # the IP addresses in this list can appear in any order
