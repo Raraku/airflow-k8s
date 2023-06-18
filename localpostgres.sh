@@ -1,0 +1,1 @@
+docker run --name postgres-airf -e POSTGRES_PASSWORD=mysecretpassword -v pgdata:/var/lib/postgresql/data -p 5432:5432 -d postgres 

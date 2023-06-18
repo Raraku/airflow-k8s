@@ -60,8 +60,8 @@ airflowVersion: "2.6.2"
 # Images
 images:
   airflow:
-    repository: ~
-    tag: ~
+    repository: us-central1-docker.pkg.dev/omisej/airftest/airk8s:latest
+    tag: latest
     # Specifying digest takes precedence over tag.
     digest: ~
     pullPolicy: IfNotPresent
@@ -81,7 +81,7 @@ images:
     tag: ~
     pullPolicy: IfNotPresent
   flower:
-    repository: ~
+    repository: us-central1-docker.pkg.dev/omisej/airftest/airk8s:latest
     tag: ~
     pullPolicy: IfNotPresent
   statsd:
@@ -360,12 +360,13 @@ data:
   resultBackendSecretName: ~
   brokerUrlSecretName: ~
 
+# using fake postgres details
   # Otherwise pass connection values in
   metadataConnection:
     user: postgres
-    pass: postgres
+    pass: mysecretpassword
     protocol: postgresql
-    host: ~
+    host: localhost
     port: 5432
     db: postgres
     sslmode: disable
@@ -1668,7 +1669,7 @@ pgbouncer:
 
 # Configuration for the redis provisioned by the chart
 redis:
-  enabled: true
+  enabled: false
   terminationGracePeriodSeconds: 600
 
   # Create ServiceAccount
@@ -1829,7 +1830,7 @@ cleanup:
 # Configuration for postgresql subchart
 # Not recommended for production
 postgresql:
-  enabled: true
+  enabled: false
   image:
     tag: "11"
   auth:
@@ -1962,20 +1963,20 @@ dags:
     ## optional subpath for dag volume mount
     subPath: ~
   gitSync:
-    enabled: false
+    enabled: true
 
     # git repo clone url
     # ssh example: git@github.com:apache/airflow.git
     # https example: https://github.com/apache/airflow.git
-    repo: https://github.com/apache/airflow.git
-    branch: v2-2-stable
+    repo: https://github.com/Raraku/airflow-k8s.git
+    branch: master
     rev: HEAD
     depth: 1
     # the number of consecutive failures allowed before aborting
     maxFailures: 0
     # subpath within the repo where dags are located
     # should be "" if dags are at repo root
-    subPath: "tests/dags"
+    subPath: "dags"
     # if your repo needs a user name password
     # you can load them to a k8s secret like the one below
     #   ---
@@ -1988,7 +1989,7 @@ dags:
     #     GIT_SYNC_PASSWORD: <base64_encoded_git_password>
     # and specify the name of the secret below
     #
-    # credentialsSecret: git-credentials
+    credentialsSecret: git-credentials
     #
     #
     # If you are using an ssh clone url, you can load
@@ -2040,9 +2041,9 @@ dags:
 logs:
   persistence:
     # Enable persistent volume for storing logs
-    enabled: false
+    enabled: true
     # Volume size for logs
-    size: 100Gi
+    size: 10Gi
     # Annotations for the logs PVC
     annotations: {}
     # If using a custom storageClass, pass name here
